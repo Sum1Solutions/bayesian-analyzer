@@ -1,54 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Bayesian Conspiracy Theory Analyzer</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <meta charset="UTF-8">
+  <title>Conspiracy Analyzer</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body>
-    <h1>Bayesian Conspiracy Theory Analyzer</h1>
-    <select id="theory-select">
-        {% for theory in theories %}
-            <option value="{{theory.name}}">{{theory.name}}</option>
+  <div class="container">
+    <h1 class="mt-4">Conspiracy Analyzer</h1>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Conspiracy Theory</th>
+          <th>Introduced</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for conspiracy in conspiracies %}
+        <tr>
+          <td><a href="/conspiracy/{{ conspiracy.name }}">{{ conspiracy.name }}</a></td>
+          <td>{{ conspiracy.year }}</td>
+        </tr>
         {% endfor %}
-    </select>
-
-    <div id="questions"></div>
-    <button id="submit">Submit</button>
-
-    <div id="result"></div>
-
-    <script>
-        $("#theory-select").change(function() {
-            var selectedTheory = $(this).val();
-            var questions = getQuestionsForTheory(selectedTheory);
-            $("#questions").empty();
-            questions.forEach(function(question) {
-                $("#questions").append('<div><p>' + question + '</p><input type="text"></div>');
-            });
-        });
-
-        function getQuestionsForTheory(theory) {
-            // This should be replaced with real data in a production app
-            return ["Do you believe the US government has previously engaged in major covert operations?",
-                    "How trustworthy do you find mainstream media reporting on 9/11?"];
-        }
-
-        $("#submit").click(function() {
-            var answers = [];
-            $("#questions input").each(function() {
-                answers.push($(this).val());
-            });
-
-            $.ajax({
-                url: '/calculate',
-                method: 'POST',
-                data: JSON.stringify({theory: $("#theory-select").val(), answers: answers}),
-                contentType: 'application/json',
-                success: function(data) {
-                    $("#result").text("The likelihood of this theory being true, based on your answers, is: " + data.result);
-                }
-            });
-        });
-    </script>
+      </tbody>
+    </table>
+  </div>
 </body>
 </html>
